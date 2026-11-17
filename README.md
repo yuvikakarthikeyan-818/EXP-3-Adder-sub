@@ -13,22 +13,76 @@ Half Subtractor:
 •	Borrow = A' . B
 
 ### Files to be Created
-File name	Purpose
-half_add_sub.v	Arithmetic-circuit RTL
-half_add_sub_tb.v	Stimulus and VCD generation
+<img width="771" height="91" alt="image" src="https://github.com/user-attachments/assets/59cb1621-ca87-4dbb-a764-8c61a9bed259" />
 
 ### Verilog Program
-```
-```
+module half_adder (
+    input  wire A,
+    input  wire B,
+    output wire Sum,
+    output wire Carry
+);
+    assign Sum   = A ^ B;   // XOR
+    assign Carry = A & B;   // AND
+endmodule
+ 
+module half_subtractor (
+    input  wire A,
+    input  wire B,
+    output wire Diff,
+    output wire Borrow
+);
+    assign Diff   = A ^ B;      // XOR
+    assign Borrow = (~A) & B;  // A' . B
+endmodule
+
+
 ### Testbench Program
+module tb3;
+    reg A, B;
+    wire Sum, Carry;
+    wire Diff, Borrow;
+ 
+    // Instantiate the Half Adder
+    half_adder ha_uut (
+        .A(A),
+        .B(B),
+        .Sum(Sum),
+        .Carry(Carry)
+    );
+ 
+    // Instantiate the Half Subtractor
+    half_subtractor hs_uut (
+        .A(A),
+        .B(B),
+        .Diff(Diff),
+        .Borrow(Borrow)
+    );
+ 
+    initial begin
+        // ---- VCD dump setup ----
+        $dumpfile("half_add_sub.vcd");   // name of the VCD file to be generated
+        $dumpvars(0, tb3);                // dump all signals in this testbench hierarchy
+ 
+        // ---- Apply all 4 input combinations ----
+        $monitor("Time=%0t A=%b B=%b | Sum=%b Carry=%b | Diff=%b Borrow=%b",
+                   $time, A, B, Sum, Carry, Diff, Borrow);
+        A = 0; B = 0; #10;
+        A = 0; B = 1; #10;
+        A = 1; B = 0; #10;
+        A = 1; B = 1; #10;
+ 
+        #10 $finish;
+    end
+endmodule
+
 
 
 ### Truth Table
 
+<img width="867" height="138" alt="image" src="https://github.com/user-attachments/assets/8580a2e2-1a79-4a56-91c1-b06b42a7c9cc" />
 
-<img width="645" height="87" alt="TT3" src="https://github.com/user-attachments/assets/37e33bb3-d647-45d5-b610-c255d7e41b8b" />
 
-### Simulation Procedure
 
 STEP 1 – Open Terminal
 Open a terminal in the experiment folder.
@@ -84,27 +138,12 @@ The Half Adder and Half Subtractor were realized using Verilog HDL:
 The design was compiled and simulated using Synopsys VCS, and the functionality was verified using DVE waveform analysis, matching the expected truth table.
 
 ### Output
+<img width="1917" height="1022" alt="EXP 3 HALF ADD " src="https://github.com/user-attachments/assets/99703199-6e35-47fc-9abe-f30654b6f67a" />
 
 
-### Viva-Voce Questions
 
-•	What is a Half Adder, and what are its limitations compared to a Full Adder?
+<img width="1916" height="987" alt="EXP 3 HALF SUB" src="https://github.com/user-attachments/assets/920d5a04-9b83-41e7-a275-c14964b70da3" />
 
-•	What is a Half Subtractor, and what does the Borrow output signify?
-
-•	Why is the Sum/Difference expression identical (A⊕B) for both circuits, while Carry and Borrow differ?
-
-•	What gate realizes the XOR function, and why is it central to both circuits?
-
-•	What is the purpose of a Verilog testbench?
-
-•	Why is a VCD file generated, and what does $dumpvars(0, tb) do?
-
-•	What is the purpose of ./simv?
-
-•	What is the difference between simulation and synthesis?
-
-•	How would you extend this design to a Full Adder/Full Subtractor?
 
 ### Result
 
